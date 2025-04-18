@@ -27,16 +27,6 @@ async def on_ready():
         print(f"Une erreur est survenue lors de la synchronisation des commandes : {e}")
 
 
-
-
-
-
-import pandas as pd
-import re
-import unicodedata
-import discord
-from discord.ext import commands
-
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
@@ -123,33 +113,6 @@ async def chat(interaction: discord.Interaction, question: str):
 
     await interaction.response.send_message(reponse)
 
-
-
-
-
-
-
-
-@bot.event
-async def on_message(message: discord.Message):
-    # Empêcher le bot de répondre à ses propres messages
-    if message.author.bot:
-        return
-    
-    # Si le message est "bonjour" (insensible à la casse), répondre
-    if message.content.lower() == 'bonjour':
-        author = message.author
-        await author.send("Comment vas-tu ?")
-    
-    # Si le message est "bienvenue" (insensible à la casse), envoyer un message dans un canal spécifique
-    if message.content.lower() == "bienvenue":
-        # Vérifie que le bot peut obtenir le canal
-        channel_bot = bot.get_channel(1357475081101639780)
-        if channel_bot:
-            await channel_bot.send("Bienvenue")
-
-    # Permet de traiter les commandes de l'extension commands
-    await bot.process_commands(message)
 
 
 
