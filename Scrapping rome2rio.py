@@ -138,5 +138,5 @@ for depart, arrivee in paires:
 
 # Création du DataFrame et sauvegarde dans un fichier CSV
 df = pd.DataFrame(tous_les_resultats)
-df.to_csv("resultats_toutes_villes.csv", index=False, sep=";", encoding="utf-8-sig")
-print("\n✅ Fichier généré : resultats_toutes_villes.csv")
+df.to_csv("resultats200villes.csv", index=False, sep=";", encoding="utf-8-sig")
+print("\n✅ Fichier généré : resultats200villes.csv")
