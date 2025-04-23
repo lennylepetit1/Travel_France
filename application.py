@@ -67,7 +67,12 @@ def chatbot_response(question):
         
         if not filtered_data.empty:
             trajet = filtered_data.iloc[0]
-            return f"Trajet {ville1} → {ville2} : {trajet['Transport']} - {trajet['Durée']} - Prix : {trajet['Prix']}"
+            # Formulation de la réponse naturelle
+            transport = trajet['Transport']
+            duree = trajet['Durée']
+            prix = trajet['Prix']
+            return (f"Tu peux utiliser un {transport.lower()} pour faire ce trajet. "
+                    f"Cela prendra environ {duree.lower()} et le prix est de {prix}.")
         else:
             return f"Je n'ai pas d'informations sur ce trajet entre {ville1} et {ville2}."
     
