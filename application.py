@@ -14,9 +14,6 @@ df['Arrivée'] = df['Arrivée'].str.strip()
 # Convertir la colonne 'Date de départ' en format datetime pour un meilleur filtrage
 df['Date de départ'] = pd.to_datetime(df['Date de départ'], format='%d/%m/%Y', errors='coerce')
 
-# Afficher les noms de colonnes pour vérifier
-print("Colonnes disponibles dans le fichier CSV :", df.columns)
-
 # Fonction pour filtrer et afficher les trajets
 def afficher_trajets():
     depart = depart_combobox.get()
@@ -50,9 +47,54 @@ def afficher_trajets():
             tree.insert("", "end", values=(row['Départ'], row['Arrivée'], row['Date de départ'].strftime('%d/%m/%Y'),
                                           row['Durée'], row['Transport'], row['Prix']))
 
+# Fonction pour le chatbot
+def chatbot_response(question):
+    # Convertir la question en minuscules pour éviter les problèmes de casse
+    question = question.lower()
+
+    # Rechercher les villes dans la question
+    villes_trouvees = []
+    for ville1 in df['Départ'].unique():
+        for ville2 in df['Arrivée'].unique():
+            # Vérifier si les deux villes sont mentionnées dans la question
+            if ville1.lower() in question and ville2.lower() in question and ville1 != ville2:
+                villes_trouvees.append((ville1, ville2))
+
+    # Si des villes sont trouvées, donner la réponse correspondante
+    if villes_trouvees:
+        ville1, ville2 = villes_trouvees[0]
+        filtered_data = df[(df['Départ'] == ville1) & (df['Arrivée'] == ville2)]
+        
+        if not filtered_data.empty:
+            trajet = filtered_data.iloc[0]
+            return f"Trajet {ville1} → {ville2} : {trajet['Transport']} - {trajet['Durée']} - Prix : {trajet['Prix']}"
+        else:
+            return f"Je n'ai pas d'informations sur ce trajet entre {ville1} et {ville2}."
+    
+    # Si aucune correspondance n'est trouvée
+    return "Désolé, je n'ai pas compris. Essaye de poser une question sur les trajets entre deux villes."
+
+# Fonction pour afficher les réponses du chatbot
+def on_send():
+    user_input = user_entry.get()
+    chat_log.config(state=tk.NORMAL)  # Rendre le chat log modifiable pour afficher la réponse
+    chat_log.insert(tk.END, "Vous: " + user_input + "\n")
+    
+    # Obtenir la réponse du chatbot
+    bot_reply = chatbot_response(user_input)
+    chat_log.insert(tk.END, "Bot: " + bot_reply + "\n\n")
+    
+    # Faire défiler la fenêtre vers le bas pour afficher la dernière réponse
+    chat_log.yview(tk.END)
+
+    # Effacer le champ de saisie de l'utilisateur
+    user_entry.delete(0, tk.END)
+    
+    chat_log.config(state=tk.DISABLED)  # Revenir à un état non modifiable après l'insertion
+
 # Créer la fenêtre principale
 root = tk.Tk()
-root.title("Filtre de Trajets")
+root.title("Filtre de Trajets et Chatbot")
 
 # Créer les combobox pour les lieux de départ et d'arrivée
 tk.Label(root, text="Lieu de départ").grid(row=0, column=0)
@@ -79,6 +121,15 @@ for col in columns:
     tree.heading(col, text=col)
 
 tree.grid(row=4, column=0, columnspan=2)
+
+# Interface de chatbot
+tk.Label(root, text="Chatbot").grid(row=5, column=0, columnspan=2)
+chat_log = tk.Text(root, height=15, width=60, state=tk.DISABLED)
+chat_log.grid(row=6, column=0, columnspan=2)
+user_entry = tk.Entry(root, width=50)
+user_entry.grid(row=7, column=0, columnspan=2)
+send_button = tk.Button(root, text="Envoyer", command=on_send)
+send_button.grid(row=8, column=0, columnspan=2)
 
 # Lancer l'application
 root.mainloop()
