@@ -5,117 +5,33 @@ from discord.ext import commands
 import difflib
 import unicodedata
 import re
-import pandas as pd
 
 
-load_dotenv()
+
+# Charger les variables d'environnement depuis le fichier .env
+load_dotenv()  
 
 print("Lancement du bot...")
 
+
+
+
 # Création de l'instance du client avec les intents appropriés
-bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
     print("Bot allumé !")
     # Synchroniser les commandes slash
     try:
-        # sync
+        # Synchronisation des commandes
         synced = await bot.tree.sync()
         print(f"Commandes slash synchronisées : {len(synced)}")
     except Exception as e:
         print(f"Une erreur est survenue lors de la synchronisation des commandes : {e}")
 
-
-intents = discord.Intents.default()
-bot = commands.Bot(command_prefix="!", intents=intents)
-
-# Liste des villes connues
-villes_connues = [ "Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes", "Montpellier", "Strasbourg", 
-    "Bordeaux", "Lille", "Rennes", "Toulon", "Reims", "Saint-Étienne", "Le Havre", "Villeurbanne", 
-    "Dijon", "Angers", "Grenoble", "Saint-Denis", "Nîmes", "Aix-en-Provence", "Clermont-Ferrand", 
-    "Le Mans", "Brest", "Tours", "Amiens", "Annecy", "Limoges", "Metz", "Perpignan", "Boulogne-Billancourt", 
-    "Besançon", "Orléans", "Rouen", "Saint-Denis", "Montreuil", "Caen", "Argenteuil", "Saint-Paul", "Mulhouse", 
-    "Nancy", "Roubaix", "Tourcoing", "Nanterre", "Vitry-sur-Seine", "Créteil", "Avignon", "Asnières-sur-Seine", 
-    "Colombes", "Aubervilliers", "Poitiers", "Dunkerque", "Aulnay-sous-Bois", "Saint-Pierre", "Versailles", 
-    "Le Tampon", "Courbevoie", "Rueil-Malmaison", "Béziers", "La Rochelle", "Pau", "Champigny-sur-Marne", 
-    "Cherbourg-en-Cotentin", "Mérignac", "Antibes", "Saint-Maur-des-Fossés", "Ajaccio", "Fort-de-France", 
-    "Cannes", "Saint-Nazaire", "Noisy-le-Grand", "Mamoudzou", "Drancy", "Cergy", "Levallois-Perret", 
-    "Issy-les-Moulineaux", "Calais", "Colmar", "Pessac", "Vénissieux", "Évry-Courcouronnes", "Clichy", 
-    "Quimper", "Ivry-sur-Seine", "Valence", "Bourges", "Antony", "Cayenne", "La Seyne-sur-Mer", 
-    "Montauban", "Troyes", "Villeneuve-d'Ascq", "Pantin", "Chambéry", "Niort", "Le Blanc-Mesnil", 
-    "Neuilly-sur-Seine", "Sarcelles", "Fréjus", "Lorient", "Villejuif", "Saint-André", "Maisons-Alfort", 
-    "Clamart", "Narbonne", "Meaux", "Beauvais", "Hyères", "Bobigny", "Vannes", "La Roche-sur-Yon", 
-    "Saint-Louis", "Chelles", "Cholet", "Corbeil-Essonnes", "Épinay-sur-Seine", "Bayonne", "Saint-Ouen-sur-Seine", 
-    "Saint-Quentin", "Cagnes-sur-Mer", "Fontenay-sous-Bois", "Vaulx-en-Velin", "Les Abymes", "Saint-Laurent-du-Maroni", 
-    "Sevran", "Sartrouville", "Arles", "Bondy", "Gennevilliers", "Albi", "Massy", "Saint-Herblain", 
-    "Laval", "Saint-Priest", "Suresnes", "Martigues", "Les Sables-d'Olonne", "Grasse", "Vincennes", 
-    "Évreux", "Aubagne", "Bastia", "Saint-Malo", "Blois", "La Courneuve", "Brive-la-Gaillarde", "Meudon", 
-    "Livry-Gargan", "Carcassonne", "Montrouge", "Choisy-le-Roi", "Rosny-sous-Bois", "Noisy-le-Sec", 
-    "Talence", "Belfort", "Charleville-Mézières", "Alfortville", "Saint-Germain-en-Laye", "Sète", 
-    "Alès", "Saint-Brieuc", "Chalon-sur-Saône", "Salon-de-Provence", "Tarbes", "Mantes-la-Jolie", "Puteaux", 
-    "Istres", "Melun", "Bagneux", "Caluire-et-Cuire", "Rezé", "Châlons-en-Champagne", "Châteauroux", 
-    "Valenciennes", "Bron", "Thionville", "Castres", "Arras", "Garges-lès-Gonesse", "Anglet", "Villenave-d'Ornon", 
-    "Bourg-en-Bresse", "Bagnolet", "Angoulême", "Boulogne-sur-Mer", "Colomiers", "Wattrelos", "Compiègne", 
-    "Poissy", "Gagny", "Draguignan", "Gap", "Stains", "Montélimar", "Le Cannet", "Marcq-en-Barœul", 
-    "Douai", "Villepinte", "Le Lamentin"]  
-
-# Lecture du fichier CSV avec les infos de trajets
-df = pd.read_csv("C:/Users/dalia/Downloads/TABLEAU FINALE scraping.csv")
-
-# Normalisation des textes pour matcher sans accent / majuscule
-def normalize_text(text):
-    text = text.lower()
-    text = unicodedata.normalize('NFD', text).encode('ascii', 'ignore').decode("utf-8")
-    text = re.sub(r'[^\w\s]', '', text)
-    return text
-
-# Commande slash Discord
-@bot.tree.command(name="chat", description="Pose une question sur un trajet entre deux villes")
-async def chat(interaction: discord.Interaction, question: str):
-    question_clean = normalize_text(question)
-
-    # Trouve les villes mentionnées dans la question même en partie
-    villes_trouvees = []
-    for ville in villes_connues:
-        if normalize_text(ville) in question_clean:
-            villes_trouvees.append(ville)
-
-    if len(villes_trouvees) < 2:
-        await interaction.response.send_message(
-            "Je n'ai pas reconnu deux villes dans ta question. Essaie par exemple : 'Comment aller de Paris à Lyon ?'"
-        )
-        return
-
-    ville1, ville2 = villes_trouvees[0], villes_trouvees[1]
-
-    # Filtrage des trajets dans le DataFrame, peu importe l'ordre
-    condition1 = (df["Départ"].str.lower() == ville1.lower()) & (df["Arrivée"].str.lower() == ville2.lower())
-    condition2 = (df["Départ"].str.lower() == ville2.lower()) & (df["Arrivée"].str.lower() == ville1.lower())
-
-    trajet = df[condition1 | condition2]
-
-    if trajet.empty:
-        await interaction.response.send_message(f"Je n'ai pas trouvé de trajet entre {ville1} et {ville2}. 😕")
-        return
-
-    # On prend la première ligne du résultat (tu peux améliorer pour montrer plusieurs trajets plus tard)
-    row = trajet.iloc[0]
-
-    reponse = (
-        f"**Trajet {row['Départ']} → {row['Arrivée']}**\n"
-        f"• 🕐 Départ : {row['Heure de départ']}\n"
-        f"• 🕒 Durée : {row['Durée']}\n"
-        f"• 🚉 Arrivée : {row['Heure d’arrivée']}\n"
-        f"• 🚗 Transport : {row['Transport']}\n"
-        f"• 💶 Prix : {row['Prix']}"
-    )
-
-    await interaction.response.send_message(reponse)
-
-
-
-
+# Fonction de normalisation de texte (suppression des accents, minuscules, etc.)
 def normalize_text(text):
     # Mise en minuscules
     text = text.lower()
@@ -127,11 +43,13 @@ def normalize_text(text):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
+# Commande slash pour poser une question sur les déplacements
 @bot.tree.command(name="chat", description="Pose une question sur les déplacements")
 async def chat(interaction: discord.Interaction, question: str):
     original_question = question
     question = normalize_text(question)
 
+    # Dictionnaire des réponses possibles
     responses = {
         "comment aller de paris a lyon": "Tu peux prendre un train, un bus ou une voiture. Le train (TGV) est le plus rapide (~2h).",
         "prix moyen de marseille a toulouse": "Le prix en bus est autour de 15€, en train entre 30 et 60€, en fonction de la période.",
@@ -147,10 +65,132 @@ async def chat(interaction: discord.Interaction, question: str):
         "trajet paris lyon": "Train TGV : 2h / Bus : 6h / Voiture : 4h30. Prix variable selon le moment.",
         "idee de transport ecolo": "Favorise le train ou le covoiturage 🚆🌱",
         "le plus rapide toulouse bordeaux": "Train direct : 2h environ.",
-        "meilleur prix nantes a lille": "Bus : dès 12€, mais durée > 8h. Train : 4h, dès 30€ avec anticipation."
-    }
+        "meilleur prix nantes a lille": "Bus : dès 12€, mais durée > 8h. Train : 4h, dès 30€ avec anticipation.",
+      "comment aller de paris a marseille": "Train TGV direct (~3h), bus (~10h) ou avion (~1h30).",
+    "quel est le moyen le plus rapide pour aller de lyon a toulouse": "L’avion (~1h10) est le plus rapide, mais le train direct (~4h30) est confortable.",
+    "combien coute un trajet lille strasbourg": "En train, entre 40€ et 90€. En bus, à partir de 20€.",
+    "moyen le moins cher pour aller de nantes a bordeaux": "Le bus est souvent le moins cher, à partir de 10€.",
+    "idee de trajet pour visiter la bretagne": "Départ de Rennes → Saint-Malo → Brest → Quimper 🚗🌊",
+    "temps de trajet entre dijon et lyon": "En train : environ 2h. En voiture : 2h15.",
+    "comment aller de grenoble a montpellier": "Train avec changement à Valence ou Lyon (~3h30).",
+    "quel transport entre metz et paris": "Train direct (TGV) ~1h30. Bus plus lent (~4h).",
+    "moyen le plus ecolo pour aller de tours a poitiers": "Le train régional est rapide (~1h) et écologique.",
+    "trajet rapide de nice a avignon": "Train avec changement à Marseille (~3h30).",
+    "itineraire de road trip entre lyon et nimes": "Lyon → Valence → Avignon → Nîmes 🚘☀️",
+    "comment aller de caen a rouen": "Train direct (~1h30) ou voiture (~1h45).",
+    "quel est le prix moyen pour aller de paris a lille": "Train TGV : entre 25€ et 60€. Bus : dès 10€.",
+    "temps de trajet en train de toulouse a montpellier": "Environ 2h15 en train direct.",
+    "comment aller de bordeaux a bayonne": "Train direct (~2h10) ou voiture (~2h15).",
+    "idee de voyage entre strasbourg et colmar": "Train régional rapide (~30 min), parfait pour une escapade.",
+    "quel est le moyen le plus rapide de marseille a nice": "Train direct (~2h30), ou voiture (~2h20 sans bouchons).",
+    "prix d un billet bus lyon grenoble": "Entre 5€ et 10€ selon la période.",
+    "comment aller a annecy depuis geneve": "Bus ou train (~1h30), ou voiture (~45 min).",
+    "trajet rapide entre paris et chartres": "Train TER direct (~1h) ou voiture (~1h15).",
+    "idee de road trip entre clermont ferrand et limoges": "Clermont → Montluçon → Guéret → Limoges 🚙🌳",
+    "temps en train de reims a paris": "Environ 45 minutes avec le TGV.",
+    "comment aller de bordeaux a toulon": "Avion avec escale ou train avec changement (~7h).",
+    "prix d un billet de nancy a strasbourg": "Entre 15€ et 30€ selon le mode et l’horaire.",
+    "moyen le plus pratique de nantes a angers": "Train direct (~40 min) très fréquent.",
+    "quelle duree pour aller de lille a bruxelles": "Environ 35 minutes en train Thalys ou TGV.",
+    "comment aller a limoges depuis paris": "Train direct (~3h15) ou bus (~5h).",
+    "quel transport de besancon a dijon": "Train TER (~1h30) ou voiture (~1h20).",
+    "idee d itineraire de toulouse a carcassonne": "Toulouse → Castelnaudary → Carcassonne en train (~1h10).",
+    "comment aller de perpignan a montpellier": "Train direct (~1h40), ou bus (~2h30).",
+    "comment aller de pau a toulouse": "Train (~2h30) ou voiture (~2h15). Le bus est aussi une option moins chère.",
+    "itineraire rapide entre tours et paris": "TGV direct : ~1h10. Voiture : ~2h30 selon le trafic.",
+    "meilleur moyen de transport entre le mans et rennes": "Train direct (~1h30) ou voiture (~2h).",
+    "comment aller de la rochelle a nantes": "Train avec ou sans changement (~2h30).",
+    "quelle est la distance entre grenoble et chambery": "Environ 60 km, 1h en train ou voiture.",
+    "trajet entre dijon et besancon": "Train TER direct (~1h30) ou voiture (~1h20).",
+    "moyen de transport entre limoges et poitiers": "Train régional (~2h), peu de bus directs.",
+    "temps de trajet de strasbourg a luxembourg": "Train direct (~2h10) ou voiture (~2h).",
+    "comment aller de paris a bruxelles": "TGV Thalys : ~1h20. Bus : ~4h. Avion déconseillé.",
+    "idee de road trip en normandie": "Rouen → Étretat → Deauville → Caen 🚗🌊",
+    "combien coute un trajet paris chartres": "Entre 12€ et 20€ en train selon l’heure.",
+    "meilleure option entre montpellier et perpignan": "Train direct (~1h40). Bus moins cher (~2h30).",
+    "comment aller de lyon a annecy": "Train direct (~2h) ou voiture (~1h40).",
+    "itineraire pour aller de metz a nancy": "Train (~50 min) ou voiture (~1h). Très facile.",
+    "comment aller de bayonne a biarritz": "Train ou bus local (~15 min), ou vélo en bord de mer.",
+    "trajet rapide entre angers et le mans": "Train direct (~40 min), très pratique.",
+    "comment aller de paris a rouen": "Train direct (~1h30) ou voiture (~2h).",
+    "temps de trajet de clermont ferrand a saint etienne": "Environ 2h en voiture. Train avec changement (~2h30).",
+    "quelle option pour aller de toulon a marseille": "Train TER rapide (~1h15), ou voiture (~1h10).",
+    "trajet entre avignon et arles": "Train direct (~20 min) ou voiture (~40 min).",
+    "idee de boucle en road trip autour de bordeaux": "Bordeaux → Arcachon → Dune du Pilat → Saint-Émilion 🚘🍷",
+    "temps de trajet entre lille et valenciennes": "Train TER (~40 min) ou voiture (~1h).",
+    "comment aller de nancy a luxembourg": "Train direct (~1h30) ou voiture (~1h45).",
+    "quelle est la meilleure façon d aller de lyon a geneve": "Train direct (~2h) ou covoiturage (~1h45).",
+    "transport entre bordeaux et toulouse": "Train direct (~2h). Bus plus long mais moins cher.",
+    "comment aller de caen a le havre": "Train avec changement (~2h30) ou voiture (~1h45).",
+    "meilleur moyen de transport entre montpellier et nimes": "Train TER direct (~30 min), rapide et fréquent.",
+    "idee de road trip entre toulouse et biarritz": "Toulouse → Auch → Pau → Biarritz 🚗🌄🌊",
+    "quelle duree entre perpignan et narbonne": "Train direct (~40 min) ou voiture (~1h).",
+    "comment aller de strasbourg a bale": "Train direct (~1h30) ou voiture (~1h45).",
+   "quelle est la duree entre paris et amiens": "Train direct : ~1h15. Voiture : ~1h45 selon trafic.",
+    "comment aller de grenoble a valence": "Train direct (~1h15) ou voiture (~1h).",
+    "trajet entre nimes et avignon": "Train direct : ~30 minutes. Très pratique.",
+    "idee de trajet entre dijon et lyon": "TGV direct (~2h). Voiture : ~2h également.",
+    "meilleur itineraire entre orleans et chartres": "Train (~1h10) ou voiture (~1h20).",
+    "comment aller de toulon a nice": "Train direct (~2h), ou voiture (~2h10).",
+    "temps de trajet entre caen et cherbourg": "Train direct (~2h10).",
+    "comment aller de bayonne a pau": "Train (~1h), ou voiture (~1h20).",
+    "quelle est la distance entre le havre et rouen": "Environ 90 km, 1h15 en voiture ou train.",
+    "comment aller de besancon a mulhouse": "Train direct (~1h30) ou voiture (~1h50).",
+    "idee de week end depuis strasbourg": "Strasbourg → Colmar → Riquewihr 🚗🍇",
+    "meilleur moyen entre tours et poitiers": "Train direct (~1h10) ou voiture (~1h30).",
+    "comment aller de limoges a clermont ferrand": "Train (~3h) ou voiture (~2h45).",
+    "itineraire de metz a reims": "Train direct (~2h) ou voiture (~2h15).",
+    "trajet rapide entre rennes et brest": "Train direct (~2h15).",
+    "comment aller de paris a lille": "TGV direct (~1h), ou bus (~3h).",
+    "moyen de transport entre dijon et paris": "TGV direct (~1h40).",
+    "quelle duree entre lyon et toulouse": "Avion (~1h10), train (~4h), voiture (~6h).",
+    "comment aller de grenoble a chamonix": "Train + bus (~3h) ou voiture (~2h30).",
+    "idee de circuit entre montpellier et carcassonne": "Montpellier → Béziers → Narbonne → Carcassonne 🚗🏰",
+    "comment aller de rouen a amiens": "Train (~2h avec changement), ou voiture (~2h).",
+    "trajet entre bordeaux et bayonne": "Train direct (~2h).",
+    "quelle est la duree entre toulouse et albi": "Train (~1h) ou voiture (~1h10).",
+    "comment aller de reims a lille": "Train direct (~2h15).",
+    "transport entre besancon et dijon": "Train direct (~1h30).",
+    "idee de road trip dans le massif central": "Clermont-Ferrand → Le Puy-en-Velay → Mende → Millau 🚗🌄",
+    "quelle option pour aller de paris a le mans": "TGV direct (~1h).",
+    "comment aller de nice a menton": "Train TER (~40 min) ou voiture (~50 min).",
+    "duree de trajet entre nancy et strasbourg": "Train (~1h30), très simple.",
+    "comment aller de limoges a brive la gaillarde": "Train direct (~1h30) ou voiture (~1h20).",
+    "comment aller de lyon a annecy": "Train direct (~1h20) ou voiture (~1h30).",
+    "trajet rapide entre dijon et nancy": "Train direct (~2h), ou voiture (~2h30).",
+    "quelle est la duree entre paris et la rochelle": "TGV direct (~2h30), ou voiture (~5h).",
+    "comment aller de rouen a calais": "Train avec changement (~2h30), ou voiture (~2h).",
+    "comment aller de bordeaux a angouleme": "Train direct (~1h), ou voiture (~1h30).",
+    "moyen de transport entre toulouse et montauban": "Train direct (~30 min), ou voiture (~40 min).",
+    "trajet entre nantes et la roche sur yon": "Train direct (~1h), ou voiture (~1h15).",
+    "comment aller de lyon a marseille": "TGV direct (~1h40), ou voiture (~3h).",
+    "quel est le trajet le plus rapide entre rouen et le havre": "Train direct (~45 min), ou voiture (~1h).",
+    "quelle est la distance entre toulouse et castres": "Train (~1h10), ou voiture (~1h30).",
+    "comment aller de brest a quimper": "Train (~1h), ou voiture (~1h15).",
+    "trajet entre strasbourg et mulhouse": "Train direct (~1h10), ou voiture (~1h).",
+    "moyen de transport entre marseille et aix en provence": "Train direct (~30 min), ou voiture (~30 min).",
+    "quelle est la duree entre paris et orleans": "Train (~1h), ou voiture (~1h30).",
+    "comment aller de nantes a lorient": "Train direct (~1h30), ou voiture (~1h45).",
+    "comment aller de nice a monaco": "Train direct (~25 min), ou voiture (~30 min).",
+    "trajet entre lyon et montpellier": "TGV (~1h40), ou voiture (~3h).",
+    "duree de trajet entre lille et rouen": "Train (~3h) ou voiture (~2h30).",
+    "comment aller de metz a strasbourg": "Train direct (~2h), ou voiture (~2h).",
+    "moyen de transport entre paris et troyes": "Train direct (~1h30), ou voiture (~1h45).",
+    "quel est le moyen le plus rapide entre nantes et rennes": "Train (~40 min), ou voiture (~1h10).",
+    "quelle est la distance entre clermont ferrand et montpellier": "Train (~3h), ou voiture (~3h30).",
+    "comment aller de rouen a dieppe": "Train direct (~1h30), ou voiture (~1h).",
+    "trajet entre toulouse et carcassonne": "Train direct (~1h), ou voiture (~1h10).",
+    "quelle est la duree de trajet entre paris et reims": "Train direct (~45 min), ou voiture (~1h30).",
+    "comment aller de lyon a valence": "Train direct (~1h), ou voiture (~1h30).",
+    "moyen de transport entre marseille et montpellier": "Train direct (~1h30), ou voiture (~2h).",
+    "comment aller de la rochelle a bordeaux": "Train direct (~2h), ou voiture (~2h).",
+    "quelle est la distance entre dijon et lyon": "Train direct (~2h), ou voiture (~1h30).",
+    "trajet rapide entre paris et montargis": "Train (~1h), ou voiture (~1h30).",
+    "comment aller de lille a roubaix": "Train direct (~15 min), ou voiture (~20 min).",
+    "quelle est la duree entre strasbourg et colmar": "Train direct (~30 min), ou voiture (~40 min).",
+    "comment aller de toulon a marseille": "Train direct (~1h), ou voiture (~1h20)." }
 
-    # Normalisation des clés
+    # Normalisation des clés du dictionnaire
     normalized_keys = list(responses.keys())
 
     # Trouver la question la plus proche
@@ -163,21 +203,24 @@ async def chat(interaction: discord.Interaction, question: str):
 
     await interaction.response.send_message(response)
 
-
+# Commande pour envoyer une alerte à un membre
 @bot.tree.command(name="warnguy", description="Alerter une personne")
 async def warnguy(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.send_message("Alerte envoyée")
     await member.send("Tu as reçu une alerte")
 
+# Commande pour bannir un membre
 @bot.tree.command(name="banguy", description="Bannir une personne")
 async def banguy(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.send_message("Ban envoyé!")
     await member.ban(reason="Tu n'es pas abonné")
     await member.send("Tu as été banni")
 
+# Démarrer le bot avec le token chargé depuis les variables d'environnement
+print(f"TOKEN lu depuis .env : {os.getenv('TOKEN')}")
+
+bot.run(os.getenv("TOKEN"))
 
 
 
 
-# Démarrage du bot avec le token chargé depuis .env
-bot.run(os.getenv('DISCORD_TOKEN'))
