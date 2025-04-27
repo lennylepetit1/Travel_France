@@ -96,28 +96,62 @@ L'application fournit une interface claire où les trajets sont présentés sous
 
 ## 3. Chatbot d'Assistance aux Utilisateurs
 
-### Objectif
+### 
 
-Le chatbot a été intégré à l'application pour fournir des réponses instantanées aux utilisateurs concernant les trajets. Le chatbot est capable de répondre à des questions telles que :
+Un chatbot interactif qui permet aux utilisateurs de poser des questions sur les trajets en France et d’obtenir des réponses instantanées basées sur des données précises.
 
--   Quels sont les modes de transport entre deux villes ?
--   Quel est le prix du trajet ?
--   Quelle est la durée du trajet ?
--   Quelle est l'heure de départ ?
+###  Composants principaux :  
+Discord Bot : Permet une interaction en temps réel avec les utilisateurs via la plateforme Discord.
 
-Le chatbot interagit avec l'utilisateur et lui fournit les informations nécessaires, soit en récupérant les données du fichier CSV généré lors du scrapping, soit en répondant aux questions sur les trajets.
+Base de données CSV : Le bot utilise un fichier CSV contenant les informations sur les trajets grace au scraping.
 
-### Fonctionnement
+### Fonctionnement du chatbot:
 
-Le chatbot utilise des techniques de traitement du langage naturel (NLP) pour comprendre les demandes des utilisateurs et leur fournir des réponses en temps réel. Le chatbot interroge les données scrappées dans le fichier CSV pour extraire les informations demandées.
+Analyse des questions :
+Le bot analyse les messages des utilisateurs pour détecter les villes de départ, les villes d'arrivée, et les dates.
 
-Voici un exemple d'interaction avec le chatbot :
+Réponses dynamiques :
+Si l'utilisateur demande un trajet entre deux villes, le bot filtre les données et répond avec les trajets disponibles.
 
-**Utilisateur :** "Quel est le prix pour aller de Paris à Lyon ?"\
-**Chatbot :** "Le prix le plus bas pour ce trajet en train est de 45 €."
+Gestion des attentes :
+Si l'utilisateur ne spécifie pas la ville de départ ou d'arrivée, le bot attend la précision avant de répondre.
+capture d'ecran
 
-**Utilisateur :** "Combien de temps dure le trajet de Paris à Marseille ?"\
-**Chatbot :** "Le trajet en avion dure 3 h 15 min."
+### Packages :
+Discord.py : Pour la création du bot et la gestion des interactions sur Discord.
+
+Pandas : Pour traiter et analyser les données du fichier CSV.
+
+commands : de la bibliothèque discord.ext pour faciliter la gestion des commandes dans le bot.
+
+dotenv : Pour charger le token du bot de manière sécurisée.
+
+### Exemples d'Interaction:
+
+Il suffit d'écrire une phrase qui contient le nom des villes présentes dans la base.
+
+Cas 1 : "Quels trajets existent entre Marseille et Toulouse ?"
+"Voici les trajets disponibles de Marseille à Toulouse :
+- Train : 3h30 | Prix : 45€
+- Bus : 4h00 | Prix : 20€"
+
+Cas 2 : "je veux aller de strasbourg a grenoble"
+"Voici les trajets disponibles de Strasbourg à Grenoble :
+- Train : 5h15 | Prix : 60€"
+
+### Autre code python :
+Création d'un second script Python :
+➔ Génération manuelle d'un dictionnaire de questions/réponses
+
+Objectif :
+
+Proposer un ensemble de questions préparées
+
+Associer chaque question à une réponse prédéfinie
+
+Utilisable pour tester rapidement le bot sans dépendance du scraping ou du site Rome2Rio
+
+### Démonstration :
 
 ------------------------------------------------------------------------
 
@@ -135,5 +169,5 @@ Le projet est disponible sur GitHub, et il peut être facilement modifié ou ét
 
 -   [Repository GitHub de Travel France](https://github.com/lennylepetit1/Travel_France)
 -   [Documentation API Rome2Rio](https://www.rome2rio.com/documentation)
-
+-   https://discord.com/developers/applications/1356261846167978089/bot
 ------------------------------------------------------------------------
