@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import pandas as pd
 
-# Charger le CSV
+# Charger le CSV du scrapping fourni par aurélien
 file_path = 'C:/Users/lenny/OneDrive/Documents/programmation projet/Fun_Project/TABLEAU FINALE.csv'
 df = pd.read_csv(file_path, sep=';')
 
