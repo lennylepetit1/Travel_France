@@ -1,0 +1,139 @@
+---
+title: "Projet Travel France"
+author: "Lenny LePetit, Aurélien Bresson, Dalia Azzoug"
+output:
+  pdf_document: default
+  output: null
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+# Introduction
+
+Le projet "Travel France" a pour but de créer une application permettant de rechercher et d'afficher les différents trajets disponibles entre 200 villes françaises. L'application utilise un **scraping web** pour obtenir les données sur les trajets et un **chatbot** pour répondre aux questions des utilisateurs.
+
+Le projet est accessible via le repository GitHub suivant : [Travel France GitHub Repository](https://github.com/lennylepetit1/Travel_France).
+
+------------------------------------------------------------------------
+
+# Architecture du Projet
+
+Le projet est constitué de plusieurs parties principales :
+
+1.  **Scrapping des données des trajets**\
+2.  **Application de présentation des trajets**\
+3.  **Chatbot d'assistance aux utilisateurs**
+
+## 1. Scrapping des données des trajets
+
+### Objectif du Scrapping
+
+L'objectif du scrapping était d'extraire des informations sur les trajets entre les **200 villes françaises** à l'aide de l'API de **Rome2Rio**. Pour chaque trajet, nous avons collecté des informations telles que :
+
+-   Le mode de transport (Avion, Train, Bus, Covoiturage, etc.)
+-   La durée du trajet
+-   Le prix du trajet
+-   Les horaires de départ et d'arrivée
+-   Le nombre d'escales
+
+### Processus de Scrapping
+
+Le processus de scrapping se fait en deux étapes principales :
+
+1.  **Accès à l'API de Rome2Rio :**\
+    Nous avons utilisé l'API de Rome2Rio pour rechercher les trajets entre les différentes villes. L'API fournit des informations détaillées sur les trajets, y compris les prix, la durée, et les modes de transport.
+
+2.  **Extraction des informations :**\
+    Pour chaque trajet, nous avons extrait les informations suivantes :
+
+    -   Durée du trajet (en minutes, convertie en format `x h y min`)
+    -   Prix le plus bas possible parmi les différents modes de transport
+    -   Informations sur le transport (Avion, Train, etc.)
+    -   Date de départ et heure d’arrivée générées aléatoirement, comprises entre le 28 avril et le 1er mai 2025
+
+Le scrapping a été effectué pour toutes les combinaisons possibles entre les villes dans la liste des **200 villes françaises**. Les résultats ont été stockés dans un fichier CSV.
+
+### Exemple de Scrapping
+
+Voici un exemple de données générées par le script :
+
+| Départ | Arrivée | Date de départ | Heure de départ | Durée | Heure d’arrivée | Transport | Prix |
+|---------|---------|---------|---------|---------|---------|---------|---------|
+| Paris | Marseille | 29/04/2025 | 10:30 | 3 h 15 min | 13:45 | Avion | 75 € |
+| Lyon | Toulouse | 28/04/2025 | 08:00 | 2 h 40 min | 10:40 | Train | 45 € |
+| Nice | Nantes | 30/04/2025 | 12:00 | 5 h 15 min | 17:15 | Covoiturage | 15 € |
+
+------------------------------------------------------------------------
+
+## 2. Application de Présentation des Trajets
+
+### Objectif
+
+L'objectif de l'application est de permettre à l'utilisateur de rechercher et afficher les trajets possibles entre deux villes françaises parmi les 200 villes du projet. L'utilisateur peut ainsi connaître :
+
+-   Les différents moyens de transport disponibles (Avion, Train, Bus, etc.)
+-   La durée des trajets
+-   Le prix le plus bas pour chaque mode de transport
+-   Les horaires de départ et d’arrivée générés
+
+### Fonctionnement
+
+L'utilisateur peut entrer une ville de départ et une ville d'arrivée. L'application interroge ensuite le fichier CSV généré par le scrapping pour afficher les trajets disponibles entre ces deux villes.
+
+L'application fournit une interface claire où les trajets sont présentés sous forme de tableau, et chaque ligne indique les informations suivantes pour un trajet spécifique :
+
+-   **Départ**
+-   **Arrivée**
+-   **Date de départ**
+-   **Heure de départ**
+-   **Durée du trajet**
+-   **Heure d’arrivée**
+-   **Transport utilisé**
+-   **Prix du trajet**
+
+------------------------------------------------------------------------
+
+## 3. Chatbot d'Assistance aux Utilisateurs
+
+### Objectif
+
+Le chatbot a été intégré à l'application pour fournir des réponses instantanées aux utilisateurs concernant les trajets. Le chatbot est capable de répondre à des questions telles que :
+
+-   Quels sont les modes de transport entre deux villes ?
+-   Quel est le prix du trajet ?
+-   Quelle est la durée du trajet ?
+-   Quelle est l'heure de départ ?
+
+Le chatbot interagit avec l'utilisateur et lui fournit les informations nécessaires, soit en récupérant les données du fichier CSV généré lors du scrapping, soit en répondant aux questions sur les trajets.
+
+### Fonctionnement
+
+Le chatbot utilise des techniques de traitement du langage naturel (NLP) pour comprendre les demandes des utilisateurs et leur fournir des réponses en temps réel. Le chatbot interroge les données scrappées dans le fichier CSV pour extraire les informations demandées.
+
+Voici un exemple d'interaction avec le chatbot :
+
+**Utilisateur :** "Quel est le prix pour aller de Paris à Lyon ?"\
+**Chatbot :** "Le prix le plus bas pour ce trajet en train est de 45 €."
+
+**Utilisateur :** "Combien de temps dure le trajet de Paris à Marseille ?"\
+**Chatbot :** "Le trajet en avion dure 3 h 15 min."
+
+------------------------------------------------------------------------
+
+# Conclusion
+
+Ce projet a pour but de fournir une plateforme permettant aux utilisateurs de trouver facilement des informations sur les trajets disponibles entre les villes françaises. Grâce au scrapping des données et à l'intégration d'un chatbot, l'utilisateur peut non seulement trouver des trajets entre les villes, mais également obtenir des informations instantanées concernant les prix, la durée et les horaires.
+
+Les principales étapes du projet comprennent le scrapping des données de Rome2Rio, l'intégration de ces données dans une application, et la création d'un chatbot pour répondre aux demandes des utilisateurs.
+
+Le projet est disponible sur GitHub, et il peut être facilement modifié ou étendu pour inclure de nouvelles fonctionnalités ou de nouvelles villes.
+
+------------------------------------------------------------------------
+
+# Liens Utiles
+
+-   [Repository GitHub de Travel France](https://github.com/lennylepetit1/Travel_France)
+-   [Documentation API Rome2Rio](https://www.rome2rio.com/documentation)
+
+------------------------------------------------------------------------
