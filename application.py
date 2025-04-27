@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 import pandas as pd
+import re
 
-# Charger le CSV du scrapping fourni par aurélien
+# Charger le CSV
 file_path = 'C:/Users/lenny/OneDrive/Documents/programmation projet/Fun_Project/TABLEAU FINALE.csv'
 df = pd.read_csv(file_path, sep=';')
 
@@ -47,37 +48,94 @@ def afficher_trajets():
             tree.insert("", "end", values=(row['Départ'], row['Arrivée'], row['Date de départ'].strftime('%d/%m/%Y'),
                                           row['Durée'], row['Transport'], row['Prix']))
 
-# Fonction pour le chatbot (pour le moment, on ne peut pas mettre le bot de dalia)
+
+
+# Variables globales pour garder le contexte
+destination_en_attente = None
+date_en_attente = None
+
+# Fonction chatbot corrigée avec gestion de contexte
 def chatbot_response(question):
-    # Convertir la question en minuscules pour éviter les problèmes de casse
+    global destination_en_attente
+    global date_en_attente
+
     question = question.lower()
 
-    # Rechercher les villes dans la question
-    villes_trouvees = []
-    for ville1 in df['Départ'].unique():
-        for ville2 in df['Arrivée'].unique():
-            # Vérifier si les deux villes sont mentionnées dans la question
-            if ville1.lower() in question and ville2.lower() in question and ville1 != ville2:
-                villes_trouvees.append((ville1, ville2))
+    # Chercher une date dans la question
+    date_match = re.search(r'(\d{1,2}/\d{1,2}/\d{4})', question)
+    date_filter = None
+    if date_match:
+        try:
+            date_filter = pd.to_datetime(date_match.group(1), format='%d/%m/%Y')
+        except Exception as e:
+            print(f"Erreur de parsing de la date : {e}")
 
-    # Si des villes sont trouvées, donner la réponse correspondante
-    if villes_trouvees:
-        ville1, ville2 = villes_trouvees[0]
-        filtered_data = df[(df['Départ'] == ville1) & (df['Arrivée'] == ville2)]
-        
-        if not filtered_data.empty:
-            trajet = filtered_data.iloc[0]
-            # Formulation de la réponse naturelle
-            transport = trajet['Transport']
-            duree = trajet['Durée']
-            prix = trajet['Prix']
-            return (f"Tu peux utiliser un {transport.lower()} pour faire ce trajet. "
-                    f"Cela prendra environ {duree.lower()} et le prix est de {prix}.")
+    # Vérifier si on attend la ville de départ
+    if destination_en_attente is not None:
+        # On attend que l'utilisateur donne sa ville de départ
+        depart_trouve = None
+        for ville in df['Départ'].unique().tolist():
+            if ville.lower() in question:
+                depart_trouve = ville
+                break
+
+        if depart_trouve:
+            # Sauvegarder la destination avant de reset
+            destination = destination_en_attente
+
+            # Reset du contexte
+            destination_en_attente = None
+            date_en_attente = None
+
+            # Chercher les trajets
+            filtered_data = df[(df['Départ'] == depart_trouve) & (df['Arrivée'] == destination)]
+
+            if not filtered_data.empty:
+                response = f"Voici les trajets disponibles de {depart_trouve} à {destination} :\n"
+                for _, row in filtered_data.iterrows():
+                    response += f"- {row['Transport']} : {row['Durée']} | Prix : {row['Prix']}\n"
+                return response
+            else:
+                return f"Désolé, aucun trajet trouvé de {depart_trouve} à {destination}."
         else:
-            return f"Je n'ai pas d'informations sur ce trajet entre {ville1} et {ville2}."
-    
-    # Si aucune correspondance n'est trouvée
-    return "Désolé, je n'ai pas compris. Essaye de poser une question sur les trajets entre deux villes."
+            return "Je n'ai pas compris ta ville de départ. Peux-tu réessayer en précisant ta ville de départ ?"
+
+    # Sinon, comportement normal
+    villes_trouvees = []
+
+    for ville in df['Départ'].unique().tolist() + df['Arrivée'].unique().tolist():
+        if ville.lower() in question and ville not in villes_trouvees:
+            villes_trouvees.append(ville)
+
+    if len(villes_trouvees) >= 2:
+        depart_trouve, arrivee_trouvee = villes_trouvees[0], villes_trouvees[1]
+
+        filtered_data = df[(df['Départ'] == depart_trouve) & (df['Arrivée'] == arrivee_trouvee)]
+
+        if date_filter is not None:
+            filtered_data = filtered_data[filtered_data['Date de départ'] == date_filter]
+
+        if not filtered_data.empty:
+            response = f"Voici les trajets disponibles de {depart_trouve} à {arrivee_trouvee}"
+            if date_filter is not None:
+                response += f" le {date_filter.strftime('%d/%m/%Y')}"
+            response += " :\n"
+            for _, row in filtered_data.iterrows():
+                response += f"- {row['Transport']} : {row['Durée']} | Prix : {row['Prix']}\n"
+            return response
+        else:
+            return f"Je n'ai pas d'informations sur ce trajet entre {depart_trouve} et {arrivee_trouvee}" + (f" pour le {date_filter.strftime('%d/%m/%Y')}" if date_filter else "") + "."
+
+    elif len(villes_trouvees) == 1:
+        # Une seule ville détectée -> demander la ville de départ
+        destination_en_attente = villes_trouvees[0]
+        if date_filter is not None:
+            date_en_attente = date_filter
+        return f"Tu veux aller à {destination_en_attente} ? Bonne idée, mais peux-tu préciser ta ville de départ ? 😊"
+
+    else:
+        return "Désolé, je n'ai pas compris. Essaie de poser une question sur les trajets entre deux villes."
+
 
 # Fonction pour afficher les réponses du chatbot
 def on_send():
