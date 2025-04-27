@@ -47,7 +47,7 @@ def afficher_trajets():
             tree.insert("", "end", values=(row['Départ'], row['Arrivée'], row['Date de départ'].strftime('%d/%m/%Y'),
                                           row['Durée'], row['Transport'], row['Prix']))
 
-# Fonction pour le chatbot
+# Fonction pour le chatbot (pour le moment, on ne peut pas mettre le bot de dalia)
 def chatbot_response(question):
     # Convertir la question en minuscules pour éviter les problèmes de casse
     question = question.lower()
