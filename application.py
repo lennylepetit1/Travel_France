@@ -131,7 +131,7 @@ def chatbot_response(question):
         destination_en_attente = villes_trouvees[0]
         if date_filter is not None:
             date_en_attente = date_filter
-        return f"Tu veux aller à {destination_en_attente} ? Bonne idée, mais peux-tu préciser ta ville de départ ? 😊"
+        return f"Tu veux aller à {destination_en_attente} ? Bonne idée, mais peux-tu préciser ta ville de départ ? "
 
     else:
         return "Désolé, je n'ai pas compris. Essaie de poser une question sur les trajets entre deux villes."
