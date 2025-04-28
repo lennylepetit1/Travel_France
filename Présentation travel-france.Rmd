@@ -7,117 +7,187 @@ output:
   word_document: default
   html_document:
     df_print: paged
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-# Introduction
+Introduction
 
-Le projet "Travel France" a pour but de créer une application permettant de rechercher et d'afficher les différents trajets disponibles entre 200 villes françaises. L'application utilise un **scraping web** pour obtenir les données sur les trajets et un **chatbot** pour répondre aux questions des utilisateurs.
+Le projet "Travel France" a pour but de créer une application permettant de rechercher et d'afficher les différents trajets disponibles entre 200 villes françaises. L'application utilise un scraping web pour obtenir les données sur les trajets et un chatbot pour répondre aux questions des utilisateurs.
 
-Le projet est accessible via le repository GitHub suivant : [Travel France GitHub Repository](https://github.com/lennylepetit1/Travel_France).
+Le projet est accessible via le repository GitHub suivant : Travel France GitHub Repository.
 
-------------------------------------------------------------------------
-
-# Architecture du Projet
+Architecture du Projet
 
 Le projet est constitué de plusieurs parties principales :
 
-1.  **Scrapping des données des trajets**\
-2.  **Application de présentation des trajets**\
-3.  **Chatbot d'assistance aux utilisateurs**
+Scrapping des données des trajets
 
-## 1. Scrapping des données des trajets
+Application de présentation des trajets
 
-### Objectif du Scrapping
+Chatbot d'assistance aux utilisateurs
 
-L'objectif du scrapping était d'extraire des informations sur les trajets entre les **200 villes françaises** à l'aide de l'API de **Rome2Rio**. Pour chaque trajet, nous avons collecté des informations telles que :
+1. Scrapping des données des trajets
 
--   Le mode de transport (Avion, Train, Bus, Covoiturage, etc.)
--   La durée du trajet
--   Le prix du trajet
--   Les horaires de départ et d'arrivée
--   Le nombre d'escales
+Objectif du Scrapping
 
-### Processus de Scrapping
+L'objectif du scrapping était d'extraire des informations sur les trajets entre les 200 villes françaises à l'aide de l'API de Rome2Rio. Pour chaque trajet, nous avons collecté des informations telles que :
+
+Le mode de transport (Avion, Train, Bus, Covoiturage, etc.)
+
+La durée du trajet
+
+Le prix du trajet
+
+Les horaires de départ et d'arrivée
+
+Le nombre d'escales
+
+Processus de Scrapping
 
 Le processus de scrapping se fait en deux étapes principales :
 
-1.  **Accès à l'API de Rome2Rio :**\
-    Nous avons utilisé l'API de Rome2Rio pour rechercher les trajets entre les différentes villes. L'API fournit des informations détaillées sur les trajets, y compris les prix, la durée, et les modes de transport.
+Accès à l'API de Rome2Rio :Nous avons utilisé l'API de Rome2Rio pour rechercher les trajets entre les différentes villes. L'API fournit des informations détaillées sur les trajets, y compris les prix, la durée, et les modes de transport.
 
-2.  **Extraction des informations :**\
-    Pour chaque trajet, nous avons extrait les informations suivantes :
+Extraction des informations :Pour chaque trajet, nous avons extrait les informations suivantes :
 
-    -   Durée du trajet (en minutes, convertie en format `x h y min`)
-    -   Prix le plus bas possible parmi les différents modes de transport
-    -   Informations sur le transport (Avion, Train, etc.)
-    -   Date de départ et heure d’arrivée générées aléatoirement, comprises entre le 28 avril et le 1er mai 2025
+Durée du trajet (en minutes, convertie en format x h y min)
 
-Le scrapping a été effectué pour toutes les combinaisons possibles entre les villes dans la liste des **200 villes françaises**. Les résultats ont été stockés dans un fichier CSV.
+Prix le plus bas possible parmi les différents modes de transport
 
-### Exemple de Scrapping
+Informations sur le transport (Avion, Train, etc.)
+
+Date de départ et heure d’arrivée générées aléatoirement, comprises entre le 28 avril et le 1er mai 2025
+
+Le scrapping a été effectué pour toutes les combinaisons possibles entre les villes dans la liste des 200 villes françaises. Les résultats ont été stockés dans un fichier CSV.
+
+Exemple de Scrapping
 
 Voici un exemple de données générées par le script :
 
-| Départ | Arrivée | Date de départ | Heure de départ | Durée | Heure d’arrivée | Transport | Prix |
-|---------|---------|---------|---------|---------|---------|---------|---------|
-| Paris | Marseille | 29/04/2025 | 10:30 | 3 h 15 min | 13:45 | Avion | 75 € |
-| Lyon | Toulouse | 28/04/2025 | 08:00 | 2 h 40 min | 10:40 | Train | 45 € |
-| Nice | Nantes | 30/04/2025 | 12:00 | 5 h 15 min | 17:15 | Covoiturage | 15 € |
+Départ
 
-------------------------------------------------------------------------
+Arrivée
 
-## 2. Application de Présentation des Trajets
+Date de départ
 
-### Objectif
+Heure de départ
+
+Durée
+
+Heure d’arrivée
+
+Transport
+
+Prix
+
+Paris
+
+Marseille
+
+29/04/2025
+
+10:30
+
+3 h 15 min
+
+13:45
+
+Avion
+
+75 €
+
+Lyon
+
+Toulouse
+
+28/04/2025
+
+08:00
+
+2 h 40 min
+
+10:40
+
+Train
+
+45 €
+
+Nice
+
+Nantes
+
+30/04/2025
+
+12:00
+
+5 h 15 min
+
+17:15
+
+Covoiturage
+
+15 €
+
+
+
+2. Application de Présentation des Trajets
+
+Objectif
 
 L'objectif de l'application est de permettre à l'utilisateur de rechercher et afficher les trajets possibles entre deux villes françaises parmi les 200 villes du projet. L'utilisateur peut ainsi connaître :
 
--   Les différents moyens de transport disponibles (Avion, Train, Bus, etc.)
--   La durée des trajets
--   Le prix le plus bas pour chaque mode de transport
--   Les horaires de départ et d’arrivée générés
+Les différents moyens de transport disponibles (Avion, Train, Bus, etc.)
 
-### Fonctionnement
+La durée des trajets
+
+Le prix le plus bas pour chaque mode de transport
+
+Les horaires de départ et d’arrivée générés
+
+Fonctionnement
 
 L'utilisateur peut entrer une ville de départ et une ville d'arrivée. L'application interroge ensuite le fichier CSV généré par le scrapping pour afficher les trajets disponibles entre ces deux villes.
 
 L'application fournit une interface claire où les trajets sont présentés sous forme de tableau, et chaque ligne indique les informations suivantes pour un trajet spécifique :
 
--   **Départ**
--   **Arrivée**
--   **Date de départ**
--   **Heure de départ**
--   **Durée du trajet**
--   **Heure d’arrivée**
--   **Transport utilisé**
--   **Prix du trajet**
+Départ
 
-------------------------------------------------------------------------
+Arrivée
 
-## 3. Chatbot d'Assistance aux Utilisateurs
+Date de départ
 
-### 
+Heure de départ
+
+Durée du trajet
+
+Heure d’arrivée
+
+Transport utilisé
+
+Prix du trajet
+
+3. Chatbot d'Assistance aux Utilisateurs
 
 Un chatbot interactif qui permet aux utilisateurs de poser des questions sur les trajets en France et d’obtenir des réponses instantanées basées sur des données précises.
 
-###  Composants principaux :  
+Composants principaux :
+
 Discord Bot : Permet une interaction en temps réel avec les utilisateurs via la plateforme Discord.
 
 Base de données CSV : Le bot utilise un fichier CSV contenant les informations sur les trajets grace au scraping.
 
-### Fonctionnement du chatbot:
+Fonctionnement du chatbot:
 
-Analyse des questions :
-Le bot analyse les messages des utilisateurs pour détecter les villes de départ, les villes d'arrivée, et les dates.
+Analyse des questions : Le bot analyse les messages des utilisateurs pour détecter les villes de départ, les villes d'arrivée, et les dates.
 
-Réponses dynamiques :
-Si l'utilisateur demande un trajet entre deux villes, le bot filtre les données et répond avec les trajets disponibles.
+Réponses dynamiques : Si l'utilisateur demande un trajet entre deux villes, le bot filtre les données et répond avec les trajets disponibles.
 
-Gestion des attentes :
-Si l'utilisateur ne spécifie pas la ville de départ ou d'arrivée, le bot attend la précision avant de répondre.
-capture d'ecran
+Gestion des attentes : Si l'utilisateur ne spécifie pas la ville de départ ou d'arrivée, le bot attend la précision avant de répondre. capture d'ecran
 
-### Packages :
+Packages :
+
 Discord.py : Pour la création du bot et la gestion des interactions sur Discord.
 
 Pandas : Pour traiter et analyser les données du fichier CSV.
@@ -126,22 +196,17 @@ commands : de la bibliothèque discord.ext pour faciliter la gestion des command
 
 dotenv : Pour charger le token du bot de manière sécurisée.
 
-### Exemples d'Interaction:
+Exemples d'Interaction:
 
 Il suffit d'écrire une phrase qui contient le nom des villes présentes dans la base.
 
-Cas 1 : "Quels trajets existent entre Marseille et Toulouse ?"
-"Voici les trajets disponibles de Marseille à Toulouse :
-- Train : 3h30 | Prix : 45€
-- Bus : 4h00 | Prix : 20€"
+Cas 1 : "Quels trajets existent entre Marseille et Toulouse ?" "Voici les trajets disponibles de Marseille à Toulouse : - Train : 3h30 | Prix : 45€ - Bus : 4h00 | Prix : 20€"
 
-Cas 2 : "je veux aller de strasbourg a grenoble"
-"Voici les trajets disponibles de Strasbourg à Grenoble :
-- Train : 5h15 | Prix : 60€"
+Cas 2 : "je veux aller de strasbourg a grenoble" "Voici les trajets disponibles de Strasbourg à Grenoble : - Train : 5h15 | Prix : 60€"
 
-### Autre code python :
-Création d'un second script Python :
-➔ Génération manuelle d'un dictionnaire de questions/réponses
+Autre code python :
+
+Création d'un second script Python : ➔ Génération manuelle d'un dictionnaire de questions/réponses
 
 Objectif :
 
@@ -151,11 +216,9 @@ Associer chaque question à une réponse prédéfinie
 
 Utilisable pour tester rapidement le bot sans dépendance du scraping ou du site Rome2Rio
 
-### Démonstration :
+Démonstration :
 
-------------------------------------------------------------------------
-
-# Conclusion
+Conclusion
 
 Ce projet a pour but de fournir une plateforme permettant aux utilisateurs de trouver facilement des informations sur les trajets disponibles entre les villes françaises. Grâce au scrapping des données et à l'intégration d'un chatbot, l'utilisateur peut non seulement trouver des trajets entre les villes, mais également obtenir des informations instantanées concernant les prix, la durée et les horaires.
 
@@ -163,11 +226,11 @@ Les principales étapes du projet comprennent le scrapping des données de Rome2
 
 Le projet est disponible sur GitHub, et il peut être facilement modifié ou étendu pour inclure de nouvelles fonctionnalités ou de nouvelles villes.
 
-------------------------------------------------------------------------
+Liens Utiles
 
-# Liens Utiles
+Repository GitHub de Travel France
 
--   [Repository GitHub de Travel France](https://github.com/lennylepetit1/Travel_France)
--   [Documentation API Rome2Rio](https://www.rome2rio.com/documentation)
--   https://discord.com/developers/applications/1356261846167978089/bot
-------------------------------------------------------------------------
+Documentation API Rome2Rio
+
+https://discord.com/developers/applications/1356261846167978089/bot
+
