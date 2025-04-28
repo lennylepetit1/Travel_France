@@ -2,9 +2,9 @@
 title: "Projet Travel France"
 author: "Lenny LePetit, Aurélien Bresson, Dalia Azzoug"
 output:
-  pdf_document: default
-  output: null
   word_document: default
+  output: null
+  pdf_document: default
   html_document:
     df_print: paged
 editor_options: 
@@ -24,9 +24,9 @@ Le projet est constitué de plusieurs parties principales :
 
 Scrapping des données des trajets
 
-Application de présentation des trajets
-
 Chatbot d'assistance aux utilisateurs
+
+Application de présentation des trajets
 
 1. Scrapping des données des trajets
 
@@ -132,43 +132,7 @@ Covoiturage
 
 
 
-2. Application de Présentation des Trajets
-
-Objectif
-
-L'objectif de l'application est de permettre à l'utilisateur de rechercher et afficher les trajets possibles entre deux villes françaises parmi les 200 villes du projet. L'utilisateur peut ainsi connaître :
-
-Les différents moyens de transport disponibles (Avion, Train, Bus, etc.)
-
-La durée des trajets
-
-Le prix le plus bas pour chaque mode de transport
-
-Les horaires de départ et d’arrivée générés
-
-Fonctionnement
-
-L'utilisateur peut entrer une ville de départ et une ville d'arrivée. L'application interroge ensuite le fichier CSV généré par le scrapping pour afficher les trajets disponibles entre ces deux villes.
-
-L'application fournit une interface claire où les trajets sont présentés sous forme de tableau, et chaque ligne indique les informations suivantes pour un trajet spécifique :
-
-Départ
-
-Arrivée
-
-Date de départ
-
-Heure de départ
-
-Durée du trajet
-
-Heure d’arrivée
-
-Transport utilisé
-
-Prix du trajet
-
-3. Chatbot d'Assistance aux Utilisateurs
+2. Chatbot d'Assistance aux Utilisateurs
 
 Un chatbot interactif qui permet aux utilisateurs de poser des questions sur les trajets en France et d’obtenir des réponses instantanées basées sur des données précises.
 
@@ -217,6 +181,46 @@ Associer chaque question à une réponse prédéfinie
 Utilisable pour tester rapidement le bot sans dépendance du scraping ou du site Rome2Rio
 
 Démonstration :
+
+
+
+
+
+3. Application de Présentation des Trajets
+
+Objectif
+
+L'objectif de l'application est de permettre à l'utilisateur de rechercher et afficher les trajets possibles entre deux villes françaises parmi les 200 villes du projet. L'utilisateur peut ainsi connaître :
+
+Les différents moyens de transport disponibles (Avion, Train, Bus, etc.)
+
+La durée des trajets
+
+Le prix le plus bas pour chaque mode de transport
+
+Les horaires de départ et d’arrivée générés
+
+Fonctionnement
+
+L'utilisateur peut entrer une ville de départ et une ville d'arrivée. L'application interroge ensuite le fichier CSV généré par le scrapping pour afficher les trajets disponibles entre ces deux villes.
+
+L'application fournit une interface claire où les trajets sont présentés sous forme de tableau, et chaque ligne indique les informations suivantes pour un trajet spécifique :
+
+Départ
+
+Arrivée
+
+Date de départ
+
+Heure de départ
+
+Durée du trajet
+
+Heure d’arrivée
+
+Transport utilisé
+
+Prix du trajet
 
 Conclusion
 
