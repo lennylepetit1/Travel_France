@@ -1,5 +1,6 @@
 # Travel_France
-L'objectif de notre projet est de faire une interface graphique ou sont résumées les différents moyens de transports allant d'une ville A à une ville B parmi les 200 plus grandes villes françaises. Pour effectuer cela, on a scrappé le site RomeToRio puis on a ajouté un hatbot sur notre application pour la complexifier.
-Le rendu Final de notre projet est sur le dossier application.py
+The objective of our project is to create a graphical interface that summarizes the different means of transportation available from city A to city B among the 200 largest French cities.
+To achieve this, we scraped data from the RomeToRio website and then added a chatbot to our application to make it more complex.
+The final version of our project can be found in the application.py file.
 
-Ce projet a été fait par Bresson Aurélien, Azzoug Dalia et Lepetit Lenny
+This project was carried out by Aurélien Bresson, Dalia Azzoug, and Lenny Lepetit.
