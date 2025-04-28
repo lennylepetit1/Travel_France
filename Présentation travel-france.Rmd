@@ -1,6 +1,6 @@
 ---
 title: "Projet Travel France"
-author: "Lenny LePetit, Aurélien Bresson, Dalia Azzoug"
+author: "Lenny Lepetit, Aurélien Bresson, Dalia Azzoug"
 output:
   word_document: default
   output: null
@@ -14,7 +14,7 @@ editor_options:
 
 Introduction
 
-Le projet "Travel France" a pour but de créer une application permettant de rechercher et d'afficher les différents trajets disponibles entre 200 villes françaises. L'application utilise un scraping web pour obtenir les données sur les trajets et un chatbot pour répondre aux questions des utilisateurs.
+Le projet "Travel France" a pour but de créer une application permettant de rechercher et d'afficher les différents trajets disponibles entre 200 villes françaises. L'application utilise un scraping web pour obtenir les données sur les trajets, une application permettant de présenter les trajets disponibles et un chatbot pour répondre aux questions des utilisateurs.
 
 Le projet est accessible via le repository GitHub suivant : Travel France GitHub Repository.
 
@@ -34,15 +34,15 @@ Objectif du Scrapping
 
 L'objectif du scrapping était d'extraire des informations sur les trajets entre les 200 villes françaises à l'aide de l'API de Rome2Rio. Pour chaque trajet, nous avons collecté des informations telles que :
 
+Les villes de départ et d'arrivées
+
+Les horaires de départ et d'arrivée
+
 Le mode de transport (Avion, Train, Bus, Covoiturage, etc.)
 
 La durée du trajet
 
 Le prix du trajet
-
-Les horaires de départ et d'arrivée
-
-Le nombre d'escales
 
 Processus de Scrapping
 
@@ -50,7 +50,7 @@ Le processus de scrapping se fait en deux étapes principales :
 
 Accès à l'API de Rome2Rio :Nous avons utilisé l'API de Rome2Rio pour rechercher les trajets entre les différentes villes. L'API fournit des informations détaillées sur les trajets, y compris les prix, la durée, et les modes de transport.
 
-Extraction des informations :Pour chaque trajet, nous avons extrait les informations suivantes :
+Extraction des informations :Pour chaque trajet, nous avons extrait les informations suivantes entre chaque villes:
 
 Durée du trajet (en minutes, convertie en format x h y min)
 
@@ -144,11 +144,11 @@ Base de données CSV : Le bot utilise un fichier CSV contenant les informations 
 
 Fonctionnement du chatbot:
 
-Analyse des questions : Le bot analyse les messages des utilisateurs pour détecter les villes de départ, les villes d'arrivée, et les dates.
+Analyse des questions : Le bot analyse les messages des utilisateurs pour détecter les villes de départ, les villes d'arrivée, les dates, les prix etc...
 
 Réponses dynamiques : Si l'utilisateur demande un trajet entre deux villes, le bot filtre les données et répond avec les trajets disponibles.
 
-Gestion des attentes : Si l'utilisateur ne spécifie pas la ville de départ ou d'arrivée, le bot attend la précision avant de répondre. capture d'ecran
+Gestion des attentes : Si l'utilisateur ne spécifie pas la ville de départ ou d'arrivée, le bot attend la précision avant de répondre. 
 
 Packages :
 
@@ -184,21 +184,11 @@ Démonstration :
 
 
 
-
-
 3. Application de Présentation des Trajets
 
 Objectif
 
-L'objectif de l'application est de permettre à l'utilisateur de rechercher et afficher les trajets possibles entre deux villes françaises parmi les 200 villes du projet. L'utilisateur peut ainsi connaître :
-
-Les différents moyens de transport disponibles (Avion, Train, Bus, etc.)
-
-La durée des trajets
-
-Le prix le plus bas pour chaque mode de transport
-
-Les horaires de départ et d’arrivée générés
+L'objectif de l'application est de permettre à l'utilisateur de rechercher et afficher les trajets possibles entre deux villes françaises parmi les 200 villes du projet. 
 
 Fonctionnement
 
@@ -226,7 +216,7 @@ Conclusion
 
 Ce projet a pour but de fournir une plateforme permettant aux utilisateurs de trouver facilement des informations sur les trajets disponibles entre les villes françaises. Grâce au scrapping des données et à l'intégration d'un chatbot, l'utilisateur peut non seulement trouver des trajets entre les villes, mais également obtenir des informations instantanées concernant les prix, la durée et les horaires.
 
-Les principales étapes du projet comprennent le scrapping des données de Rome2Rio, l'intégration de ces données dans une application, et la création d'un chatbot pour répondre aux demandes des utilisateurs.
+Les principales étapes du projet comprennent le scrapping des données de Rome2Rio, la création d'un chatbot  et l'intégration de ces données dans une application. 
 
 Le projet est disponible sur GitHub, et il peut être facilement modifié ou étendu pour inclure de nouvelles fonctionnalités ou de nouvelles villes.
 
